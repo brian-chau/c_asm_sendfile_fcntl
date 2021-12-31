@@ -10,12 +10,12 @@ _start:
     syscall
     mov r13, rax          # save fid for open
 
-    # Here, I'm going to remove the O_APPEND flag from STDOUT_FILENO file descriptor
+    # Here, I'm going to remove the O_APPEND flag from the STDOUT_FILENO file descriptor's flags
     mov rax, 0x48         # syscall number for fcntl
     mov rdi, 1            # arg1 -- file descriptor. In this case, it's STDOUT_FILENO
     mov rsi, 1            # arg2 -- cmd. 1 = F_GETFD, 2 = F_SETFD
     syscall
-    mov r12, rax          # Get the new (modified) file descriptor
+    mov r12, rax          # Get the new file descriptor flags
 
     mov r8, 1024          # O_APPEND = 0o2000
     not r8                # ~O_APPEND
@@ -23,7 +23,7 @@ _start:
     mov rax, 0x48         # syscall number for fcntl
     mov rdi, 1            # arg1 -- original file descriptor = STDOUT_FILENO
     mov rsi, 2            # arg2 -- cmd. 1 = F_GETFD, 2 = F_SETFD
-    mov rdx, r12          # arg3 -- args. In this case, the modified file descriptor without O_APPEND
+    mov rdx, r12          # arg3 -- args. In this case, the modified file descriptor flags without O_APPEND
     syscall
 
     mov rax, 0x28         # syscall number for sendfile
