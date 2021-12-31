@@ -19,7 +19,7 @@ _start:
 
     mov r8, 1024          # O_APPEND = 0o2000
     not r8                # ~O_APPEND
-    and r12, r8           # new_fid = new_fid & ~O_APPEND
+    and r12, r8           # flags = flags & ~O_APPEND
     mov rax, 0x48         # syscall number for fcntl
     mov rdi, 0x1          # arg1 -- original file descriptor = STDOUT_FILENO
     mov rsi, 0x4          # arg2 -- cmd. 1 = F_GETFD, 4 = F_SETFD
