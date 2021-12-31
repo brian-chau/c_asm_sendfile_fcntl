@@ -8,7 +8,7 @@ $ gcc main.c -o main
 ```
 
 To build the assembly application:
-```bash
+```console
 $ gcc -masm=intel -nostdlib -static main.S -o main_asm
 ```
 
@@ -20,12 +20,12 @@ ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 ```
 
 When I tried to use `sendfile` to write to the screen with the `STDOUT_FILENO` file descriptor, it would never work! 
-```bash
+```console
 sendfile(STDOUT_FILENO, open("a.txt", O_RDONLY), 0, 1000);
 ```
 
 To debug it, I wrote/built it in assembly and used the `strace` utility on it.
-```bash
+```console
 $ strace ./main_asm
 ```
 
@@ -33,7 +33,7 @@ And I would get an `EINVAL Invalid Argument` error on the `sendfile` utility. Th
 
 I knew that the file descriptors were (0 = stdin, 1 = stdout, and 2 = stderr), so I ran the following command to check the flags for `/proc/self/fdinfo/1` for `STDOUT_FILENO`, and I got this as a result:
 
-```bash
+```console
 $ cat /proc/self/fdinfo/1
 pos:    0
 flags:  0102002
