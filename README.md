@@ -11,9 +11,10 @@ To build the assembly application:
 
 Here is the definition for the `sendfile` system call that I was trying to get to work:
 
-> #include <sys/sendfile.h><br/>
-> ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
-
+```
+#include <sys/sendfile.h><br/>
+ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
+```
 
 When I tried to use `sendfile` to write to the screen with the `STDOUT_FILENO` file descriptor, it would never work! 
 > sendfile(STDOUT_FILENO, open("a.txt", O_RDONLY), 0, 1000);
@@ -25,17 +26,20 @@ And I would get an `EINVAL Invalid Argument` error on the `sendfile` utility. Th
 
 I knew that the file descriptors were (0 = stdin, 1 = stdout, and 2 = stderr), so I ran the following command to check the flags for `/proc/self/fdinfo/1` for `STDOUT_FILENO`, and I got this as a result:
 
-> cat /proc/self/fdinfo/1
->>> pos:    0
->>> flags:  0102002
->>> mnt_id: 79
-
+```
+$ cat /proc/self/fdinfo/1
+pos:    0
+flags:  0102002
+mnt_id: 79
+```
 But I didn't know what the octal number that the `flags` represented! So I found the BASH script to print out the meanings of each flag, and when I ran it, I found that the `O_APPEND` flag is represented by the octal number `02000`. So in my assembly and C programs, I had to unset the `O_APPEND` flag before attempting to write to stdout.
 
 To do this, I had to call the `fcntl` system call, whose definition from the `man` page is:
-> #include <unistd.h><br/>
-> #include <fcntl.h><br/>
-> int fcntl(int fd, int cmd, ... /* arg */ );
+```
+#include <unistd.h><br/>
+#include <fcntl.h><br/>
+int fcntl(int fd, int cmd, ... /* arg */ );
+```
 
 ...where `fd` represented the `STDOUT_FILENO`, `cmd` would be either `F_GETFD` (which has the value of `1`) or `F_SETFD` (which has the value of `2`), and `args` being the value where I modify the flags.
 
