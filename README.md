@@ -44,12 +44,12 @@ But I didn't know what the octal number that the `flags` represented! So I found
 
 To do this, I had to call the `fcntl` system call, whose definition from the `man` page is:
 ```c
-#include <unistd.h><br/>
-#include <fcntl.h><br/>
+#include <unistd.h>
+#include <fcntl.h>
 int fcntl(int fd, int cmd, ... /* arg */ );
 ```
 
-...where `fd` represented the `STDOUT_FILENO`, `cmd` would be either `F_GETFD` (which has the value of `1`) or `F_SETFD` (which has the value of `2`), and `args` being the value where I modify the flags.
+...where `fd` represented the `STDOUT_FILENO`, `cmd` would be either `F_GETFD` (which has the value of `1`) or `F_SETFD` (which has the value of `4`), and `args` being the value where I modify the flags.
 
 The `fcntl` call modifies the flags of the flags for the `STDOUT_FILENO` so that the `sendfile` system call can write them out through it.
 
