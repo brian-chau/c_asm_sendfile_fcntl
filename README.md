@@ -19,7 +19,7 @@ Here is the definition for the `sendfile` system call that I was trying to get t
 ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);
 ```
 
-When I tried to use `sendfile` to write to the screen with the `STDOUT_FILENO` file descriptor by itself, it would never work! 
+When I tried to use `sendfile` to write to the screen with the `STDOUT_FILENO` file descriptor, it would never work! But if I changed `STDOUT_FILENO` to a file descriptor for another file, it would work...
 ```console
 sendfile(STDOUT_FILENO, open("a.txt", O_RDONLY), 0, 1000);
 ```
